@@ -51,7 +51,7 @@
     <section id="work" class="work">
         <h2 class="hidden">Featured Projects.</h2>
         <div class="projects-grid">
-            <div class="project-card">
+            <div class="project-card" data-project="gucci">
                 <div class="project-card-image">
                     <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800" alt="Gucci Store Display">
                 </div>
@@ -61,10 +61,10 @@
                     <p>Created an enchanting winter wonderland theme for Gucci's 2023 Holiday Collection. Increased foot traffic by 45% during the holiday season.</p>
                 </div>
                 <div class="project-links">
-                    <a href="#" class="demo-link">View Gallery</a>
+                    <a href="javascript:void(0)" class="demo-link">View Gallery</a>
                 </div>
             </div>
-            <div class="project-card">
+            <div class="project-card" data-project="plaza">
                 <div class="project-card-image">
                     <img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800" alt="Luxury Department Store">
                 </div>
@@ -74,10 +74,10 @@
                     <p>Complete redesign of the luxury fashion floor, implementing a modern minimalist concept that boosted sales by 60%.</p>
                 </div>
                 <div class="project-links">
-                    <a href="#" class="demo-link">View Gallery</a>
+                    <a href="javascript:void(0)" class="demo-link">View Gallery</a>
                 </div>
             </div>
-            <div class="project-card">
+            <div class="project-card" data-project="sustainable">
                 <div class="project-card-image">
                     <img src="https://images.unsplash.com/photo-1600950207944-0d63e8edbc3f?w=800" alt="Fashion Exhibition">
                 </div>
@@ -87,10 +87,10 @@
                     <p>Curated an eco-friendly exhibition space using recycled materials and innovative display techniques.</p>
                 </div>
                 <div class="project-links">
-                    <a href="#" class="demo-link">View Gallery</a>
+                    <a href="javascript:void(0)" class="demo-link">View Gallery</a>
                 </div>
             </div>
-            <div class="project-card">
+            <div class="project-card" data-project="handm">
                 <div class="project-card-image">
                     <img src="https://images.unsplash.com/photo-1573516515928-92444ec46ce5?w=800" alt="Pop-up Store">
                 </div>
@@ -100,7 +100,7 @@
                     <p>Designed an immersive pop-up experience showcasing collaboration between H&M and Indonesian artisans.</p>
                 </div>
                 <div class="project-links">
-                    <a href="#" class="demo-link">View Gallery</a>
+                    <a href="javascript:void(0)" class="demo-link">View Gallery</a>
                 </div>
             </div>
         </div>
@@ -237,6 +237,25 @@
             </div>
         </div>
     </footer>
+
+    <!-- Add this right before the closing body tag -->
+    <div class="gallery-modal">
+        <div class="gallery-content">
+            <button class="close-gallery">&times;</button>
+            <div class="gallery-container">
+                <button class="gallery-nav prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="gallery-image">
+                    <img src="" alt="Gallery Image">
+                </div>
+                <button class="gallery-nav next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="gallery-info">
+                <h3></h3>
+                <p class="gallery-description"></p>
+                <div class="gallery-thumbnails"></div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

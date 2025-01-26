@@ -1,10 +1,18 @@
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        
+        // Only handle actual anchor links
+        if (href === '#' || !href.startsWith('#')) return;
+        
         e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
+        const target = document.querySelector(href);
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
     });
 });
 
@@ -278,4 +286,189 @@ const initializePageAnimations = () => {
 };
 
 // Call loading screen on page load
-document.addEventListener('DOMContentLoaded', initLoadingScreen); 
+document.addEventListener('DOMContentLoaded', initLoadingScreen);
+
+// Gallery functionality
+const initGallery = () => {
+    // First check if elements exist to prevent errors
+    const modal = document.querySelector('.gallery-modal');
+    if (!modal) return; // Exit if modal doesn't exist
+
+    const closeBtn = modal.querySelector('.close-gallery');
+    const mainImage = modal.querySelector('.gallery-image img');
+    const title = modal.querySelector('.gallery-info h3');
+    const description = modal.querySelector('.gallery-description');
+    const thumbnailsContainer = modal.querySelector('.gallery-thumbnails');
+    const prevBtn = modal.querySelector('.prev');
+    const nextBtn = modal.querySelector('.next');
+    const content = modal.querySelector('.gallery-content');
+
+    // Gallery data for each project
+    const galleryData = {
+        'gucci': {
+            title: 'Gucci Wonderland',
+            description: 'Winter holiday window display featuring an enchanting wonderland theme. Created a magical retail experience that increased foot traffic by 45% during the holiday season.',
+            images: [
+                'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800',
+                'https://images.unsplash.com/photo-1465199549974-7d82de6e2830?w=800',
+                'https://images.unsplash.com/photo-1489348611450-4c0d746d949b?w=800',
+                'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+                'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800'
+            ]
+        },
+        'plaza': {
+            title: 'Plaza Indonesia Revamp',
+            description: 'Complete redesign of the luxury fashion floor with modern minimalist concept. Implemented strategic layout changes that resulted in 60% increase in sales.',
+            images: [
+                'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800',
+                'https://images.unsplash.com/photo-1604176354204-9268737828e4?w=800',
+                'https://images.unsplash.com/photo-1600950207944-0d63e8edbc3f?w=800',
+                'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800',
+                'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800'
+            ]
+        },
+        'sustainable': {
+            title: 'Sustainable Fashion Week',
+            description: 'Curated an eco-friendly exhibition space using recycled materials and innovative display techniques. The project highlighted sustainable fashion while maintaining luxury appeal.',
+            images: [
+                'https://images.unsplash.com/photo-1600950207944-0d63e8edbc3f?w=800',
+                'https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=800',
+                'https://images.unsplash.com/photo-1581876955500-b02c30158ca8?w=800',
+                'https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800',
+                'https://images.unsplash.com/photo-1507215210622-539686c4bfaa?w=800'
+            ]
+        },
+        'handm': {
+            title: 'H&M x Local Artisans',
+            description: 'Designed an immersive pop-up experience showcasing the collaboration between H&M and Indonesian artisans. The space celebrated local craftsmanship while maintaining brand identity.',
+            images: [
+                'https://images.unsplash.com/photo-1573516515928-92444ec46ce5?w=800',
+                'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800',
+                'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800',
+                'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800',
+                'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800'
+            ]
+        }
+    };
+
+    let currentProject = null;
+    let currentImageIndex = 0;
+
+    const openGallery = (projectId) => {
+        if (!galleryData[projectId]) return;
+        
+        currentProject = projectId;
+        currentImageIndex = 0;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        updateGallery();
+    };
+
+    const closeGallery = () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        currentProject = null;
+        currentImageIndex = 0;
+    };
+
+    // Update gallery content
+    const updateGallery = () => {
+        if (!currentProject || !galleryData[currentProject]) return;
+        
+        const data = galleryData[currentProject];
+        
+        // Add loading state
+        mainImage.classList.add('loading');
+        mainImage.style.opacity = '0';
+        
+        // Preload image
+        const img = new Image();
+        img.src = data.images[currentImageIndex];
+        img.onload = () => {
+            mainImage.src = data.images[currentImageIndex];
+            mainImage.style.opacity = '1';
+            mainImage.classList.remove('loading');
+        };
+
+        // Update text content
+        title.textContent = data.title;
+        description.textContent = data.description;
+
+        // Update thumbnails
+        thumbnailsContainer.innerHTML = data.images.map((src, index) => `
+            <div class="gallery-thumbnail ${index === currentImageIndex ? 'active' : ''}" 
+                 data-index="${index}">
+                <img src="${src}" alt="Thumbnail ${index + 1}">
+            </div>
+        `).join('');
+
+        // Add click handlers to thumbnails
+        thumbnailsContainer.querySelectorAll('.gallery-thumbnail').forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const newIndex = parseInt(thumb.dataset.index);
+                if (newIndex === currentImageIndex) return;
+                currentImageIndex = newIndex;
+                updateGallery();
+            });
+        });
+    };
+
+    // Event Listeners
+    document.querySelectorAll('.demo-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const projectCard = link.closest('.project-card');
+            if (!projectCard) return;
+            
+            const projectId = projectCard.dataset.project;
+            openGallery(projectId);
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeGallery);
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeGallery();
+    });
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (!currentProject) return;
+            currentImageIndex = (currentImageIndex - 1 + galleryData[currentProject].images.length) % galleryData[currentProject].images.length;
+            updateGallery();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (!currentProject) return;
+            currentImageIndex = (currentImageIndex + 1) % galleryData[currentProject].images.length;
+            updateGallery();
+        });
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('active')) return;
+        
+        switch(e.key) {
+            case 'ArrowLeft':
+                prevBtn?.click();
+                break;
+            case 'ArrowRight':
+                nextBtn?.click();
+                break;
+            case 'Escape':
+                closeGallery();
+                break;
+        }
+    });
+};
+
+// Initialize gallery
+document.addEventListener('DOMContentLoaded', () => {
+    initGallery();
+}); 
+document.addEventListener('DOMContentLoaded', initGallery); 
